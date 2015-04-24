@@ -1,0 +1,13 @@
+* Convert to a maven project
+* Test the HD subscription
+* Pack as jar
+* Update the README to show how to run from the console
+* Better Exception Handling
+* Show Error message if the metric was not accepted by OpenTSDB
+* Convert to an OSGi application
+* Remove lib/*.jar
+* Metric data type hanlding
+* Integrate tsdb tags with EclipseScada, maybe by using some attribute on the DataItem tsdb.tags="key=value&key=value&key=value" 
+* Create a samples folder with an associated EclipseScada configuration.
+* Add a test suite.
+* Add a log framework
