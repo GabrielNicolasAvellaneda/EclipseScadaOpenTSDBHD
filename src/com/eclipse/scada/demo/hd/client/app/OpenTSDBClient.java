@@ -1,8 +1,11 @@
 package com.eclipse.scada.demo.hd.client.app;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.DataOutputStream;
+import java.net.UnknownHostException;
+import java.net.Socket;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class OpenTSDBClient {
 
@@ -16,9 +19,11 @@ public class OpenTSDBClient {
 		this.hostname = hostname;
 	}
 	
-	
 	public void connect() throws UnknownHostException, IOException {
-
+		if (client != null && client.isConnected()) {
+			return;
+		}
+		
 		client = new Socket(hostname, port);
 	}
 	
@@ -32,23 +37,22 @@ public class OpenTSDBClient {
 		return (int) (System.currentTimeMillis()/1000);
 	}
 		
-	public void write(String metric, Double value, HashSet<String> tags) throws UnknownHostException, IOException {
-		if (!client.isConnected()) {
-			connect();
-		}
+	public void write(String metric, long timestamp, Double value, HashSet<String> tags) throws UnknownHostException, IOException {
+		connect();
 		
 		DataOutputStream output = new DataOutputStream(client.getOutputStream());
-		output.writeBytes(format(metric, value));
+		String str = format(metric, timestamp, value);
+		System.out.println(str);
+		output.writeBytes(str);
 	}
 	
-	private String format(String metric, Double value) {
-		return String.format("put %s %s %f test=true", metric, getCurrentTimestamp(), value);
+	private String format(String metric, long timestamp, Double value) {
+		return String.format("put %s %s %s test=true\n", metric, timestamp, String.format(Locale.ENGLISH, "%.2f", value));
 	}
 	
 	public void finalize() throws Throwable {
 		try {
-		
-		client.close();
+			close();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -56,6 +60,5 @@ public class OpenTSDBClient {
 		finally {
 			super.finalize();
 		}
-
 	}
 }

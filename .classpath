@@ -14,9 +14,9 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.hd.source_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.hd.data_0.1.0.v20140527-1240.jar" sourcepath="lib/org.eclipse.scada.hd.data.source_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.hd.data.source_0.1.0.v20140527-1240.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.client_0.1.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.client_0.1.0.v20140527-1240.jar" sourcepath="lib/org.eclipse.scada.core.client.source_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.client.source_0.1.0.v20140527-1240.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.scada.core_0.1.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.core_0.1.0.v20140527-1240.jar" sourcepath="lib/org.eclipse.scada.core.source_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.source_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.ngp_0.1.0.v20140804-1358.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.ngp.source_0.1.0.v20140804-1358.jar"/>
@@ -55,5 +55,15 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.protocol.ngp.codec.source_0.2.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.data_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.scada.core.data.source_0.1.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.client_0.1.0.v20141014-1337.jar" sourcepath="lib/org.eclipse.scada.da.client.source_0.1.0.v20141014-1337.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.client.source_0.1.0.v20141014-1337.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.client.ngp_0.2.0.v20140528-1003.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.client.ngp.source_0.2.0.v20140528-1003.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.common.ngp_0.1.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.common.ngp.source_0.1.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.protocol.ngp.codec_0.2.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.protocol.ngp.codec.source_0.2.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.data_0.1.0.v20140527-1240.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.scada.da.data.source_0.1.0.v20140527-1240.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
