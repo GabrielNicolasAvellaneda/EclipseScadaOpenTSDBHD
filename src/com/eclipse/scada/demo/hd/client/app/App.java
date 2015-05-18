@@ -1,11 +1,17 @@
 package com.eclipse.scada.demo.hd.client.app;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Consumer;
 
+import org.eclipse.scada.core.Variant;
 import org.eclipse.scada.hd.client.*;
 import org.eclipse.scada.hd.data.HistoricalItemInformation;
 import org.eclipse.scada.hd.ItemListListener;
@@ -13,7 +19,7 @@ import org.eclipse.scada.hd.ItemListListener;
 import java.io.*;
 
 public class App {
-
+	
 	private static Boolean validateProperties(Properties properties) {
 		
 		String hdUri = properties.getProperty("org.eclipse.scada.hd.uri");
@@ -40,7 +46,7 @@ public class App {
 			System.out.println("You need to specify tsdb.port");
 			return false;
 		}
-				
+		
 		return true;
 	}
 	
@@ -52,7 +58,6 @@ public class App {
     		// TODO: Add log services.
     		Properties properties = new Properties();
     		try {
-    		
     			properties.load(fs);
     			validateProperties(properties);
 
@@ -81,6 +86,8 @@ public class App {
 
 	public static void main(String[] args) {
 		
+		final List<Metric> metrics = Collections.synchronizedList(new ArrayList<Metric>());
+		
 		Properties properties = loadConfiguration("tsdbexporter.config");
     	if (properties == null) {
     		System.exit(1);
@@ -89,15 +96,15 @@ public class App {
     	String daUri = properties.getProperty("org.eclipse.scada.da.uri");
         String hdUri = properties.getProperty("org.eclipse.scada.hd.uri");
         String tsdbHost = properties.getProperty("tsdb.host");
+        int flushInterval = 2; 
+        flushInterval = Integer.parseInt(properties.getProperty("flushInterval"));
         int tsdbPort = Integer.parseInt(sanitize(properties.getProperty("tsdb.port")));
         
-        EclipseScadaDAClient daClient;
+        final EclipseScadaDAClient daClient;
 		try {
 		
-			// Create a HD Client, every time the list of item changes, it will inform the DA Client to subscribe/unsubscribe to value changes.
-			// Exporter should listen for DA Client value changes and sent to OpenTSDB.
 			daClient = new EclipseScadaDAClient(daUri);
-			final OpenTSDBClient tsdbClient = new OpenTSDBClient(tsdbHost, tsdbPort);
+			final IOpenTSDBClient tsdbClient = new OpenTSDBClient(tsdbHost, tsdbPort);
 			daClient.addObserver(new Observer() {
 				
 				@Override
@@ -106,44 +113,58 @@ public class App {
 					try {
 						DataItemWrapper wrapper = (DataItemWrapper)arg;
 						
-						double value = wrapper.getValue().getValue().asDouble();
-						long timestamp = wrapper.getValue().getTimestamp().getTimeInMillis()/1000;
-											
-						tsdbClient.write(wrapper.getItem().getItemId(), timestamp, value, null);
-						
-						System.out.println(wrapper.item);
-						System.out.println(value);
-						System.out.println(timestamp);
-					}
+						Variant value = wrapper.getValue().getValue();
+						double theValue = -1;
+						if (value != null) {
+							try {
+								if (value.isDouble() || value.isInteger()) {
+									theValue = value.asDouble();
+									synchronized(metrics) {
+										metrics.add(new Metric(
+												wrapper.getItem().getItemId(),
+												wrapper.getValue().getTimestamp().getTimeInMillis()/1000,
+												theValue,
+												null
+										));
+									}	
+								}
+							}
+							catch(Exception e) {
+								 e.printStackTrace();
+							}
+						}
+			}
 					catch (Exception e) {
 						e.printStackTrace();
 					}
-					
 				}
 			});
 			
+			EclipseScadaHDClient hdClient = new EclipseScadaHDClient(hdUri);
+			hdClient.addObserver(new Observer() {
+				@SuppressWarnings("unchecked")
+				@Override
+				public void update(Observable o, Object arg) {
+					Set<HistoricalItemInformation> addedOrModified = (Set<HistoricalItemInformation>)arg;
+					for (HistoricalItemInformation i : addedOrModified) {
+						daClient.registerItem(i.getItemId());
+						//System.out.println("== Subscribed to " + i.getItemId());
+					}
+				}
+			});
 			
-			daClient.registerItem("REGION1.SITE1.heat.V");
-			//
-			//EclipseScadaHDClient hdClient = new EclipseScadaHDClient(hdUri);
-	        
-		
-	        //Exporter exporter = new Exporter(hdClient, daClient, tsdbClient);
+			final OpenTSDBScheduledWriter scheduledWriter = new OpenTSDBScheduledWriter(flushInterval, tsdbClient, metrics);
+			scheduledWriter.run();
+			
+			//Exporter exporter = new Exporter(hdClient, daClient, tsdbClient);
 	        //exporter.run();
+			
+			System.in.read();
 		
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        
-		
-		 
-		
-		
-		
-		
 	}
-	
-	
 
 }

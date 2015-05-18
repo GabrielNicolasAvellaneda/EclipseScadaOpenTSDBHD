@@ -43,7 +43,7 @@ public class EclipseScadaDAClient extends Observable
                     final org.eclipse.scada.core.client.Connection connection,
                     final ConnectionState state, final Throwable error )
             {
-                System.out.println ( "DA Connection state is now: " + state );
+                // TODO: Log?
             }
         } );
 

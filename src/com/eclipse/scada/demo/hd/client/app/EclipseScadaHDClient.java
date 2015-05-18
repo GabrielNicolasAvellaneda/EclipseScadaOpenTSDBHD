@@ -44,7 +44,7 @@ public class EclipseScadaHDClient extends Observable {
                     final org.eclipse.scada.core.client.Connection connection,
                     final ConnectionState state, final Throwable error )
             {
-                System.out.println ( "HD Connection state is now: " + state );
+                // TODO: Log?
             }
         } );
 
@@ -57,7 +57,8 @@ public class EclipseScadaHDClient extends Observable {
 			@Override
 			public void listChanged(Set<HistoricalItemInformation> addedOrModified,
 					Set<String> removed, boolean full) {
-				System.out.println("HD ********** listChanged");
+				EclipseScadaHDClient.this.setChanged();
+				EclipseScadaHDClient.this.notifyObservers(addedOrModified);
 			}
 		} );
 	}

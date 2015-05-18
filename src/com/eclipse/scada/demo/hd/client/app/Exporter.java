@@ -21,9 +21,9 @@ public class Exporter {
 
 	private EclipseScadaHDClient hdClient;
 	private EclipseScadaDAClient daClient;
-	private OpenTSDBClient tsdbClient;
+	private IOpenTSDBClient tsdbClient;
 	
-	public Exporter (EclipseScadaHDClient hdClient, EclipseScadaDAClient daClient, OpenTSDBClient tsdbClient) {
+	public Exporter (EclipseScadaHDClient hdClient, EclipseScadaDAClient daClient, IOpenTSDBClient tsdbClient) {
 
 		this.hdClient = hdClient;
 		this.daClient = daClient;
